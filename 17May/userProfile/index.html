@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile Dynamic Search</title>
+  <style>
+    .user-list {
+      margin-top: 50px;
+      gap: 50px;
+      display: flex;
+      flex-direction: column;
+
+    }
+
+    .user-list--item {
+      box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+      width: 250px;
+      text-align: center;
+      padding-top: 20px;
+      border: 1px solid grey;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+<script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+<script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+
+  function UserProfile({ img, name }) {
+
+
+    return (
+      <div className="user-list--item">
+        <img src={img} alt={name} />
+        <h2>{name}</h2>
+      </div>
+    );
+  }
+
+
+
+
+  function App() {
+    let [users, setUsers] = React.useState([
+      { profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLAv25BnXYMJRSvdZkm-veK3YRWdof57Ehlw&s", first_name: "Raha", last_name: "Kapur" },
+      { profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxHMPj0zrWOAyWGV7RoCloqON6BQDpecoi4A&s", first_name: "Ankita", last_name: "Sharma" },
+      { profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRC7UE1J6AYQ1j1daxcYQiphKVxqxRlngv7Rg&s", first_name: "Shilpa", last_name: "Jain" },
+      { profile: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhgIb_oOvhZikCFTyVdXGQ2jl0MtUSnHkRCg&s", first_name: "dhruvi", last_name: "Varma" }
+    ]);
+
+    let [val, setval] = React.useState("")
+
+
+    const filterName = users.filter(user =>
+      user.first_name.toLowerCase().includes(val.toLowerCase())
+    );
+
+   
+
+
+
+    return (
+      <div>
+        <input type="text" placeholder="Search Name Here..." value={val} onChange={(e) => setval(e.target.value)} />
+
+
+        <div className="user-list">
+          {filterName.map((user, index) => {
+            return (
+              <UserProfile
+                key={index}
+                img={user.profile}
+                name={`${user.first_name} ${user.last_name}`}
+              />
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<App />);
+
+
+</script>
+
+</html>
