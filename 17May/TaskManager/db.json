@@ -1,0 +1,34 @@
+{
+  "todos": [
+    {
+      "id": "dcea",
+      "title": "studing",
+      "isCompleted": false,
+      "assignee": "Amisha"
+    },
+    {
+      "id": "6169",
+      "title": "coding",
+      "isCompleted": true,
+      "assignee": "Komal"
+    },
+    {
+      "id": "e740",
+      "title": "playing",
+      "isCompleted": true,
+      "assignee": "Himashu"
+    },
+    {
+      "id": "0412",
+      "title": "typing",
+      "isCompleted": true,
+      "assignee": "Jianl"
+    },
+    {
+      "id": "ce89",
+      "title": "reading",
+      "isCompleted": false,
+      "assignee": "Pooja"
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <style>
+        .task-list {
+            border: 1px solid;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/babel">
+
+    const { useState, useEffect } = React
+
+    function App() {
+        const [tasks, setTasks] = useState([]);
+        const [formState, setFormState] = useState({
+            title: "",
+            isCompleted: false,
+            assignee: ""
+        });
+        const [filter, setFilter] = useState("");
+
+        useEffect(() => {
+            getAllTasks();
+        }, []);
+
+        async function getAllTasks() {
+            try {
+                const res = await axios.get('http://localhost:3000/todos');
+                setTasks(res.data);
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+            }
+        }
+
+        async function addTask(e) {
+            e.preventDefault();
+            try {
+                const res = await axios.post('http://localhost:3000/todos', formState);
+                setTasks([...tasks, res.data]);
+                setFormState({
+                    title: "",
+                    isCompleted: false,
+                    assignee: ""
+                });
+            } catch (error) {
+                console.error('Error adding task:', error);
+            }
+        }
+
+        function handleChange(e) {
+            const { name, type, value, checked } = e.target;
+            setFormState({ ...formState, [name]: type === "checkbox" ? checked : value });
+        }
+
+        async function deleteTask(id) {
+            try {
+                await axios.delete(`http://localhost:3000/todos/${id}`);
+                setTasks(tasks.filter(task => task.id !== id));
+            } catch (error) {
+                console.error('Error deleting task:', error);
+            }
+        }
+
+        async function updateTask(taskId, updatedTask) {
+            try {
+                await axios.put(`http://localhost:3000/todos/${taskId}`, updatedTask);
+                getAllTasks();
+            } catch (error) {
+                console.error('Error updating task:', error);
+            }
+        }
+
+        function showIncompleteTasks() {
+            return tasks.filter(task => !task.isCompleted);
+        }
+
+        function filterTasksByAssignee(assigneeName) {
+            return tasks.filter(task => task.assignee === assigneeName);
+        }
+
+        return (
+            <div>
+                <h1>Task Manager</h1>
+                <form onSubmit={addTask}>
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Type Task Here.."
+                        value={formState.title}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="checkbox"
+                        name="isCompleted"
+                        checked={formState.isCompleted}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="text"
+                        name="assignee"
+                        placeholder="Type Assignee Here.."
+                        value={formState.assignee}
+                        onChange={handleChange}
+                        required
+                    />
+                    <button type="submit">Add Task</button>
+                </form>
+
+                <button onClick={getAllTasks}>Get All Tasks</button>
+                <button onClick={() => setTasks(showIncompleteTasks())}>Show Incomplete Tasks</button>
+                <input type="text" placeholder="Filter by Assignee" onChange={e => setFilter(e.target.value)} />
+                <button onClick={() => setTasks(filterTasksByAssignee(filter))}>Filter Tasks by Assignee</button>
+
+                <ul>
+                    {tasks.map((task, index) => (
+                        <li className="task-list" key={task.id}>
+                            {task.title}
+                            <input
+                                type="checkbox"
+                                checked={task.isCompleted}
+                                onChange={() => updateTask(task.id, { ...task, isCompleted: !task.isCompleted })}
+                            />
+                            {task.assignee}
+                            <button onClick={() => deleteTask(task.id)}>Delete</button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+
+</html>
