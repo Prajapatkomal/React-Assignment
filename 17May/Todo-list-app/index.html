@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo-App</title>
+    <style>
+        .todo-list {
+            border: 1px solid;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+<script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    // Your  code will go here
+
+    function App() {
+        const [todos, setTodos] = React.useState([])
+        const [task, setTask] = React.useState("")
+
+
+        function addTodo(task) {
+            if (task=="") {
+                console.log("pls enter task")
+            } else {
+                setTodos([...todos, { text: task, Completetd: false }])
+                console.log(todos)
+                setTask("")
+            }
+
+        }
+
+        function taskCompleted(index) {
+            const updatedTodos = todos.map((todo, i) =>
+                i === index ? { ...todo, completed: !todo.completed } : todo
+            );
+            setTodos(updatedTodos);
+        }
+
+
+        function deleteTask(index) {
+            setTodos(todos.filter((el, i) => {
+                return i !== index
+            })
+            )
+
+        }
+
+
+
+        return <>
+            <div>
+                <input type="text" placeholder="Type Task Here..." value={task} onChange={(e) => setTask(e.target.value)} />
+                <button onClick={() => { addTodo(task) }}>Add Task</button>
+            </div>
+
+            <div>
+                {todos.map((todo, index) => {
+                    return <li className="todo-list" key={index}>
+                        {todo.text}
+                        <input type="checkbox" checked={todo.completed} onChange={() => taskCompleted(index)} />
+                        <button onClick={() => deleteTask(index)}>Delete</button>
+                    </li>
+
+                })}
+            </div>
+
+
+        </>
+    }
+
+
+
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+
+</script>
+
+</html>
