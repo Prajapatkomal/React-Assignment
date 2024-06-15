@@ -1,0 +1,4 @@
+#box{ display: grid; grid-template-columns: repeat(3,1fr); gap: 60px; padding: 10px; }
+#box ul{border: 1px solid; padding: 10px; background-color: antiquewhite;border-radius: 8px;}
+h1{text-align: center; color: brown; font-family: 'Courier New';}
+button{ padding: 8px; display: flex; margin-left: 220px;}
